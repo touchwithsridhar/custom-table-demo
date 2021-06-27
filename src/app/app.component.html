@@ -1,0 +1,72 @@
+<div class="container">
+  <section class="border">
+    <app-show-data [selectedSharedObj]="selectedObj" [selectedSharedIndex]="selectedIndex" (myOutput) ="GetChildData($event)"></app-show-data> 
+  </section>
+  <div class="row bg-color">
+    <div class="col-md-10 innderData">
+      <table class="table table-bordered" *ngIf="!loading">
+        <thead class=" text-white text-center">
+          <tr>
+            <th><input type="checkbox" name="checkAll">
+            <th class="p-2" *ngFor="let colName of columns">{{colName }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="pageObj?.pageItems?.length > 0">
+            <tr *ngFor="let row of pageObj?.pageItems;let i = index">
+              <td class="p-1"><input type="checkbox" name="checkedAll{{i}}"
+                  (change)="changeSelection(i,$event.target.checked)"> </td>
+              <td class="p-1">{{row.name}}</td>
+              <td class="p-1">{{row.account}}</td>
+              <td class="p-1">{{row.country}}</td>
+              <td class="p-1">{{row.date_of_join}}</td>
+            </tr>
+          </ng-container>
+          <ng-container *ngIf="pageObj?.pageItems?.length <= 0">
+            <tr>
+              <td [attr.colspan]="columns.length" class="font-weight-bold text-center">
+                No Records Found
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+      <div class="pull-right">
+          <span class="text-primary mr-2" *ngIf="((pageObj.pageNumber * this.pageSize) <= userData?.length);else temp">
+            {{ (pageObj.pageNumber * pageSize - this.pageSize)+1 }} -
+            {{ pageObj.pageNumber * this.pageSize }} of {{ userData?.length }} Items
+          </span>
+
+        <ng-template #temp>
+          <span class="text-primary mr-2">
+            {{ (pageObj.pageNumber * pageSize - this.pageSize)+1 }} -
+            {{ userData.length }} of {{ userData.length }} Items
+          </span>
+        </ng-template>
+
+        <select class="custom-select" (change)="showTable($event.target.value)">
+          <option *ngFor="let size of pageSizes" [ngValue]="size">{{size}}</option>
+        </select>
+        <!-- <button class="btn btn-primary" type="button" (click)="prevPage()" [disabled]="pageObj.pageNumber <=1">
+          Prev
+        </button> -->
+        <a (click)="prevPage()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-chevron-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+          </svg>
+        </a> &nbsp;&nbsp;&nbsp;
+        <a (click)="nextPage()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-chevron-right" viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+          </svg>
+        </a>
+        <!-- <button class="btn btn-primary" type="button" (click)="nextPage()"
+          [disabled]="pageObj.totalPages <= pageObj.pageNumber">
+          Next
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>
